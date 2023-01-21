@@ -1,0 +1,12 @@
+
+Install FastAPI & uvicorn:
+
+>  pip3 install fastapi
+
+>  pip3 install "uvicorn[standard]"
+
+
+
+Run FastAPI surver using uvicorn
+
+>  python3 -m uvicorn main:app --reload
