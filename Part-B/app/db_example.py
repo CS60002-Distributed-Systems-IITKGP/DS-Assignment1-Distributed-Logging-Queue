@@ -27,4 +27,5 @@ def create(topic: str, db: Session = Depends(get_db)):
     db.add(new_topic)
     db.commit()
     db.refresh(new_topic)
+    new_consumer = Consumer(topic_id=new_topic.topic_id)
     return new_topic
