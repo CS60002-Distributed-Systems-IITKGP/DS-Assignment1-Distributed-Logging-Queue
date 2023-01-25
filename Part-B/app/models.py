@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from core.database import Base
 from sqlalchemy.orm import relationship
+import datetime
 
 
 class Topic(Base):
@@ -36,5 +37,6 @@ class Message(Base):
     message_id = Column(Integer, primary_key=True, index=True)
     topic_id = Column(Integer, ForeignKey('topics.topic_id'))
     message = Column(String)
+    created_date = DateTime(default=datetime.datetime.utcnow)
 
     topics = relationship("Topic", backref="messages")
