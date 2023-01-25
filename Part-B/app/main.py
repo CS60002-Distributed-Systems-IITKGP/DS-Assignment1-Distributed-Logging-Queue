@@ -7,6 +7,9 @@ from core import base, database
 # add routers
 import db_example
 import producer
+import consumer
+import size
+import topics
 
 
 # all models -> db tables
@@ -30,6 +33,9 @@ get_db = database.get_db
 
 app.include_router(db_example.router)
 app.include_router(producer.router)
+app.include_router(consumer.router)
+app.include_router(size.router)
+app.include_router(topics.router)
 
 
 @app.get('/')
