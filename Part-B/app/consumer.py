@@ -42,13 +42,19 @@ def all(topic_name, consumer_id, db: Session = Depends(get_db),):
 
 
 # Register consumer with topics
-@router.post('/register/{topic}', status_code=status.HTTP_201_CREATED,)
-def create(topic: str, db: Session = Depends(get_db)):
-    new_topic = Topic(topic_name=topic)
-    db.add(new_topic)
-    db.commit()
-    db.refresh(new_topic)
-    new_consumer = Consumer(topic_id=new_topic.topic_id)
+@router.post('/register/{topic_name}', status_code=status.HTTP_201_CREATED,)
+def create(topic_name: str, db: Session = Depends(get_db)):
+    #check topic in db
+    topic = db.query(Topic).filter(Topic.topic_name == topic_name).first()
+    if topic is None:
+        raise HTTPException(status_code=404, detail="Topic not found")
+
+    # topic found in db
+    # new_topic = Topic(topic_name=topic)
+    # db.add(new_topic)
+    # db.commit()
+    # db.refresh(new_topic)
+    new_consumer = Consumer(topic_id=topic.topic_id)
     db.add(new_consumer)
     db.commit()
     db.refresh(new_consumer)
