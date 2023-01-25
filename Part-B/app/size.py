@@ -18,30 +18,18 @@ def all(topic_name, consumer_id, db: Session = Depends(get_db),):
     consumer = db.query(Consumer).filter(
         Consumer.consumer_id == consumer_id
     ).first()
-    error_flag = True
-    topic_matched = 0
-    for topic in consumer.topics:
-        if(topic.topic_name == topic_name):
-            topic_matched = topic
-            error_flag = False
-            break
-    
-    if(error_flag):
+    if consumer is None:
+        raise HTTPException(status_code=404, detail="consumer not found")
+    # error_flag = True
+    topic_matched = consumer.topics
+    # print(consumer.topics)
+    if (topic_matched.topic_name == topic_name):
+        # taking out messages for topic
+        consumer_messages = db.query(Message).filter(
+            Message.topic_id == topic_matched.topic_id
+        ).all()
+        # message = consumer_messages[consumer.last_message_index]
+        size = len(consumer_messages) - consumer.last_message_index
+        return size
+    else:
         raise HTTPException(status_code=404, detail="Topic not found")
-
-    # taking out messages for topic
-    consumer_messages = db.query(Message).filter(
-        Message.topic_id == topic_matched
-    ).all()
-
-    # message = consumer_messages[consumer.last_message_index]
-    size = len(consumer_messages) - consumer.last_message_index
-    # consumer.update({'last_message_index': consumer.last_message_index + 1})
-    # db.commit()    
-
-    return size
-
-
-
-
-

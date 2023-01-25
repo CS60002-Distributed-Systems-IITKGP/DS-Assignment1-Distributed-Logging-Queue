@@ -20,23 +20,17 @@ def all(topic_name, producer_id, message, db: Session = Depends(get_db),):
     ).first()
     if producer is None:
         raise HTTPException(detail="producer not found")
-    error_flag = True
-    topic_matched = 0
-    for topic in producer.topics:
-        if (topic.topic_name == topic_name):
-            topic_matched = topic
-            error_flag = False
-            break
-
-    if (error_flag):
+    topic_matched = producer.topics
+    # print(topic_matched)
+    if (topic_matched.topic_name == topic_name):
+        # add message for topic
+        new_message = Message(topic_id=topic_matched.topic_id, message=message)
+        db.add(new_message)
+        db.commit()
+        db.refresh(new_message)
+        return new_message
+    else:
         raise HTTPException(status_code=404, detail="Topic not found")
-
-    # add message for topic
-    new_message = Message(topic_id=topic_matched.topic_id, message=message)
-    db.add(new_message)
-    db.commit()
-    db.refresh(new_message)
-    return new_message
 
 
 # Register producer with topics
@@ -46,7 +40,7 @@ def create(topic_name: str, db: Session = Depends(get_db)):
     topic = db.query(Topic).filter(Topic.topic_name == topic_name).first()
     if topic is None:
         # create new topic
-        new_topic = Topic(topic_name=topic)
+        new_topic = Topic(topic_name=topic_name)
         db.add(new_topic)
         db.commit()
         db.refresh(new_topic)
