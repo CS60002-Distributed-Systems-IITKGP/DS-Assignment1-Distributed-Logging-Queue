@@ -130,6 +130,36 @@ Response:
     onFailure:
         - "message": "Consumer not found" // Error message
 ```
+## Database Design
+There are a total of 4 tables in the database:
+1. Topic
+2. Producer
+3. Consumer
+4. Message
+
+### Topic
+Topic table contains two attributes:
+1. topic_id (primary key)
+2. topic_name
+
+### Producer
+Topic table contains two attributes:
+1. producer_id (primary key)
+2. topic_id (foreign key)
+
+### Consumer
+Topic table contains two attributes:
+1. consumer_id (primary key)
+2. topic_id (foreign key)
+
+### Message
+Topic table contains three attributes:
+1. message_id (primary key)
+2. topic_id (foreign key)
+3. message
+
+
+
 
 ## Tehcnology Used
 1. Python3
@@ -138,3 +168,4 @@ Response:
 4. PostgreSQL
 5. git
 6. Github
+
