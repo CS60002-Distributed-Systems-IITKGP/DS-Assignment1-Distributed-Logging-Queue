@@ -14,7 +14,7 @@ router = APIRouter(
 
 # Get all items
 @router.get('/{topic_name}/{consumer_id}')
-def all(topic_name, consumer_id, db: Session = Depends(get_db),):
+def all(topic_name, consumer_id, db: Session = Depends(get_db)):
     consumer = db.query(Consumer).filter(
         Consumer.consumer_id == consumer_id
     ).first()
