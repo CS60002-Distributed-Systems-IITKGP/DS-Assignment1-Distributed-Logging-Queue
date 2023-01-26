@@ -26,8 +26,16 @@ def all(db: Session = Depends(get_db),):
     return topics
  
 
-@router.post('/{topic}', status_code=status.HTTP_201_CREATED,)
-def create(topic: str, db: Session = Depends(get_db)):
+@router.post('/{topic_name}', status_code=status.HTTP_201_CREATED,)
+def create(topic_name: str, db: Session = Depends(get_db)):
+    topics = db.query(Topic).filter(
+        # Topic.topic_name == ''
+    ).all()
+    # print(topics)
+    # CHecking if topic already exists
+    for topic in topics:      
+        if topic.topic_name ==  topic_name:
+            raise HTTPException(status_code=404, detail="Topic already exists!")
     new_topic = Topic(topic_name=topic)
     db.add(new_topic)
     db.commit()
