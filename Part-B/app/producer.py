@@ -12,14 +12,14 @@ router = APIRouter(
 )
 
 
-# Get all items
-@router.get('/produce/{topic_name}/{producer_id}/{message}')
+# posting message
+@router.post('/produce/{topic_name}/{producer_id}/{message}')
 def all(topic_name, producer_id, message, db: Session = Depends(get_db),):
     producer = db.query(Producer).filter(
         Producer.producer_id == producer_id
     ).first()
     if producer is None:
-        raise HTTPException(detail="producer not found")
+        raise HTTPException(status_code=404,detail="producer not found")
     topic_matched = producer.topics
     # print(topic_matched)
     if (topic_matched.topic_name == topic_name):
