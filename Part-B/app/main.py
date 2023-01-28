@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from core.config import settings
 from core.database import engine
-from core import base
+from core import base, database
+
+# add routers
+import producer
+import consumer
+import size
+import topics
 
 
 # all models -> db tables
@@ -21,7 +26,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.include_router()
+# db
+get_db = database.get_db
+
+
+app.include_router(topics.router)
+app.include_router(producer.router)
+app.include_router(consumer.router)
+app.include_router(size.router)
 
 
 @app.get('/')
