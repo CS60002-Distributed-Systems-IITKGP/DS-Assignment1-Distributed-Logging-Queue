@@ -31,4 +31,3 @@ def dequeue_topic(consumer_id: int, topic_id: int, message: str):
     return {'Data':{'ProducerId':consumer_id,
                     'Topic':topic_id,
                     'Message': message}}
-
