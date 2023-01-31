@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from core import database
 from models import Producer, Producer, Topic, Message
+from pydantic import BaseModel
 
 get_db = database.get_db
 
@@ -12,35 +13,54 @@ router = APIRouter(
 )
 
 
+class RegisterProducerRequest(BaseModel):
+    topic: str
+
+
+class EnqueueRequest(BaseModel):
+    topic: str
+    producer_id: int
+    message: str
+
 # posting message
-@router.post('/produce/{topic_name}/{producer_id}/{message}')
-def all(topic_name, producer_id, message, db: Session = Depends(get_db),):
+
+
+@router.post('/produce')
+def all(request: EnqueueRequest, db: Session = Depends(get_db),):
     producer = db.query(Producer).filter(
-        Producer.producer_id == producer_id
+        Producer.producer_id == request.producer_id
     ).first()
     if producer is None:
-        raise HTTPException(status_code=404,detail="producer not found")
+        raise HTTPException(status_code=404, detail={
+            "status": "failure",
+            "message": f"producer '{request.producer_id}' not found!"
+        })
     topic_matched = producer.topics
     # print(topic_matched)
-    if (topic_matched.topic_name == topic_name):
+    if (topic_matched.topic_name == request.topic):
         # add message for topic
-        new_message = Message(topic_id=topic_matched.topic_id, message=message)
+        new_message = Message(
+            topic_id=topic_matched.topic_id, message=request.message)
         db.add(new_message)
         db.commit()
         db.refresh(new_message)
-        return new_message
+        return {"status": "success"}
     else:
-        raise HTTPException(status_code=404, detail="Topic not found")
+        raise HTTPException(status_code=404, detail={
+            "status": "failure",
+            "message": f"Topic '{request.topic}' not found!"
+        })
 
 
 # Register producer with topics
-@router.post('/register/{topic_name}', status_code=status.HTTP_201_CREATED,)
-def create(topic_name: str, db: Session = Depends(get_db)):
+@router.post('/register')
+def create(request: RegisterProducerRequest, db: Session = Depends(get_db)):
     # check topic in db
-    topic = db.query(Topic).filter(Topic.topic_name == topic_name).first()
+    topic = db.query(Topic).filter(
+        Topic.topic_name == request.topic).first()
     if topic is None:
         # create new topic
-        new_topic = Topic(topic_name=topic_name)
+        new_topic = Topic(topic_name=request.topic)
         db.add(new_topic)
         db.commit()
         db.refresh(new_topic)
@@ -49,5 +69,5 @@ def create(topic_name: str, db: Session = Depends(get_db)):
     db.add(new_producer)
     db.commit()
     db.refresh(new_producer)
-    print(new_producer.producer_id)
-    return new_producer
+    # print(new_producer.producer_id)
+    return {"status": "success", "producer_id": new_producer.producer_id}
