@@ -5,11 +5,11 @@
 
 # Distributed Logging Queue
 ## Contributors
-1. Suryawanshi Vivek Bapurao - 22CS60R62
-2. Sairaj Das - 22CS60R30
-3. Sahil Mahapatra - 22CS60R14
-4. Debdutta Mitra - 22CS60R12
-5. Sourajit Bhattacharjee - 22CS60R68
+1. Suryawanshi Vivek Bapurao(coderviky) - 22CS60R62
+2. Sairaj Das(sairajd044) - 22CS60R30
+3. Sahil Mahapatra(dotslashbit) - 22CS60R14
+4. Debdutta Mitra(Dmitra1993) - 22CS60R12
+5. Sourajit Bhattacharjee(soura1819) - 22CS60R68
 
 
 ## Overview
