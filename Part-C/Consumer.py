@@ -1,7 +1,7 @@
 import requests
 
 class MyConsumer():
-    def __init__(self, topics=[], broker):
+    def __init__(self, broker, topics=[]):
         self.broker = broker
         self.subbedTopics = {}
         for topic in topics:
@@ -12,11 +12,14 @@ class MyConsumer():
             print(f'Not subscribed to the topic : {topic_name}')
         else:
             consumer_id = self.subbedTopics[topic_name]
-            msg = __recvMsg(topic_name, consumer_id)
-            if msg:
-                print(f'New message in {topic_name} : {msg}')
-            else:
-                print(f'No new message in this topic!')
+            msg = self.__recvMsg(topic_name, consumer_id)
+            # if msg:
+            #     print(f'New message in {topic_name} : {msg}')
+            #     return msg
+            # else:
+            #     print(f'No new message in this topic!')
+            #     return None
+            return msg
 
     def __subscribe(topic_name):
         url = self.broker + f'/consumer/register/{topic_name}'
@@ -37,7 +40,8 @@ class MyConsumer():
         if response.status_code == 200:
             return r.json()
             
-
+    
+    
     # def __register():
         
         
